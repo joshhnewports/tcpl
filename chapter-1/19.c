@@ -39,10 +39,8 @@ int skibidigetline(char s[], int lim)
 void reverse(char to[], char from[], int len)
 {
     /* len decides where to start reversing from. we exclude \0 and \n if it exists */
-    if (from[len-1] == '\n') { /* if from ends with a newline */
+    if (from[len-1] == '\n') /* if from ends with a newline */
 	reversei(to, from, 0, len-2); /* do not copy the newline to the beginning of to */
-	to[len-1] = '\n'; /* enforce a newline at the end since from has a newline */
-    }
     else
 	reversei(to, from, 0, len-1); /* no newline in from? then directly reverse from */
 }
@@ -50,8 +48,12 @@ void reverse(char to[], char from[], int len)
 /* m is the index for to, n for from */
 void reversei(char to[], char from[], int m, int n)
 {
-    if (from[n] == '\0' || n < 0) /* too far to the left? */
-	to[m] = '\0';
+    if (from[m] == '\0') /* should to have a null character here? */
+	to[m] = '\0'; /* then terminate to here */
+    else if (from[m] == '\n') { /* should to have a newline here? */
+	to[m] = '\n'; /* copy the newline at the end of from to the current position in to */
+	reversei(to, from, ++m, --n); /* alternatively: to[m+1] = '\0'; */
+    }
     else {
 	to[m] = from[n];
 	reversei(to, from, ++m, --n);
